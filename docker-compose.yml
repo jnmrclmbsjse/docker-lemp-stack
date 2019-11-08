@@ -1,0 +1,83 @@
+version: '3.7'
+
+services:
+
+  nginx:
+    build:
+      context: ./services/nginx
+    volumes:
+      - type: volume
+        source: studio
+        target: /var/www
+      - type: bind
+        source: ./services/nginx/configuration/virtualhosts/sites
+        target: /etc/nginx/conf.d
+      - ./mount/logs:/var/log/nginx
+    ports:
+    - target: 80
+      published: 80
+      protocol: tcp
+      mode: host
+    - target: 443
+      published: 443
+      protocol: tcp
+      mode: host
+    depends_on:
+      - php
+    restart: always
+    networks:
+      stacknet:
+        ipv4_address: ${PROTOCOL}.2
+
+  php:
+    build:
+      context: ./services/php
+      args:
+        XDEBUG_ON: ${XDEBUG_ON}
+        XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+    ports:
+    - target: 9000
+      published: 9000
+      protocol: tcp
+      mode: host
+    restart: always
+    extra_hosts: # These hosts will be inserted on container /etc/hosts
+      # Example
+      - "symfony.example.com:${PROTOCOL}.2"
+    networks:
+      stacknet:
+        ipv4_address: ${PROTOCOL}.3
+
+  mysql:
+    build:
+      context: ./services/mysql
+    ports:
+    - target: 3306
+      published: 52000 # Set 52000 to prevent port conflict with host MySQL
+      protocol: tcp
+      mode: host
+    volumes:
+      - ./mount/mariadb:/var/lib/mysql:rw
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      stacknet:
+        ipv4_address: ${PROTOCOL}.4
+
+volumes:
+  studio:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PROJECT_DIRECTORY}
+      o: bind
+
+networks:
+  stacknet:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: ${PROTOCOL}.0/16

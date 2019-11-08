@@ -1,0 +1,3 @@
+# Ignore files here for git
+.env
+./services/nginx/configuration/virtualhosts

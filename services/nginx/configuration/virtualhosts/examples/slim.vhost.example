@@ -1,0 +1,34 @@
+server {
+    listen 80;
+
+    #
+    # This server_name will be your domain for your web application
+    # It should be mapped on docker-compose extra_hosts attribute
+    # and added on your host machine 
+    # Linux --> /etc/hosts
+    # Windows --> C:/Windows/System32/drivers/etc/hosts 
+    #
+    server_name     slim.example.com slim.example.dev;
+
+    #
+    # This root is your directory on container which is /var/www/{folder_name_from_host}
+    # folder_name_from_host is used since your host projects folder will be mounted on
+    # your container
+    #
+    root    /var/www/slim-example/public;
+    index index.php;
+
+    location / {
+        try_files $uri /app.php$is_args$args;
+    }
+
+    location ~ \.php {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_index app.php;
+        fastcgi_pass  php-fpm:9000;
+    }
+}
