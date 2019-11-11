@@ -1,0 +1,5 @@
+#!/bin/bash
+
+component=$1
+docker-compose build --no-cache --force-rm $component
+docker-compose up -d --build --remove-orphans
