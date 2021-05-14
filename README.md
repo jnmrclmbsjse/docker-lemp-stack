@@ -13,7 +13,7 @@ Linux, Nginx, MySQL, PHP (LEMP) Stack for local development environment built us
 
 1. Using your favorite terminal, navigate to your Projects folder (*this could be anywhere e.g /foo/Documents/Projects*) then clone this repository.
 ```
-git clone https://gitlab.com/jnmrclmbsjse/docker-lemp-stack.git
+git clone https://github.com/jnmrclmbsjse/docker-lemp-stack.git
 ```
 2. Inside the cloned repository folder, have your environment variables available by duplicating the **.env.example** file.
 ```
@@ -49,7 +49,7 @@ This awesome stack gives you ready-made bash scripts which contains commands to 
 
 ``` 
 ## Author
-* **Junmar Jose** - *Initial work* - [Gitlab](https://gitlab.com/jnmrclmbsjse)
+* **Junmar Jose** - *Initial work* - [Github](https://github.com/jnmrclmbsjse)
 
 ## FAQs
 ### How does NGINX access our projects?
